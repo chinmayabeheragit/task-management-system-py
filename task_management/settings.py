@@ -1,5 +1,5 @@
 from pathlib import Path
-from datetime import timedelta  # For JWT settings
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -11,7 +11,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Application definition
 INSTALLED_APPS = [
     'tasks',
     'django.contrib.admin',
@@ -20,21 +19,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # Django REST framework
-    'rest_framework_simplejwt',  # JWT for authentication
-    'corsheaders',  # CORS headers
+    'rest_framework',
+    'drf_yasg',
+    'rest_framework_simplejwt',
+    'corsheaders',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_cors_headers.middleware.CorsMiddleware',  # Enable CORS middleware
 ]
 
 ROOT_URLCONF = 'task_management.urls'
@@ -57,20 +56,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_management.wsgi.application'
 
-
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'your_db_name',         # Replace with your PostgreSQL database name
-        'USER': 'your_db_user',          # Replace with your PostgreSQL user
-        'PASSWORD': 'your_password',     # Replace with your PostgreSQL password
+        'NAME': 'taskManagement',  # Replace with your DB name
+        'USER': 'postgres',  # Replace with your DB user
+        'PASSWORD': 'Poststark',  # Replace with your DB password
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
-# REST Framework & JWT Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -83,10 +79,19 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # Redis location (replace if needed)
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all domains to make requests to the API
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -94,14 +99,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Add for static files in production
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
